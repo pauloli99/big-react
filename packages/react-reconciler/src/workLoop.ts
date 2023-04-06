@@ -1,13 +1,9 @@
 import { FiberNode, FiberRootNode, createWorkInProgress } from './fiber';
 import { HostRoot } from './workTags';
 import { beginWork } from './beginWork';
+import { completeWork } from './completeWork';
 
 let workInProgress: FiberNode | null = null;
-
-function prepareFreshStack(root: FiberRootNode) {
-	// 	workInProgress = fiber;
-	workInProgress = createWorkInProgress(root.current, {});
-}
 
 export const scheduleUpdateOnFiber = (fiber: FiberNode) => {
 	// TODO scheduler
@@ -15,6 +11,11 @@ export const scheduleUpdateOnFiber = (fiber: FiberNode) => {
 
 	if (root) renderRoot(root);
 };
+
+function prepareFreshStack(root: FiberRootNode) {
+	// 	workInProgress = fiber;
+	workInProgress = createWorkInProgress(root.current, {});
+}
 
 function markUpdateFromFiberToRoot(fiber: FiberNode): FiberRootNode | null {
 	let node = fiber;
