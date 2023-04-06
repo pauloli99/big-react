@@ -6,7 +6,7 @@ export interface Update<State> {
 
 export interface UpdateQueue<State> {
 	shared: {
-		penging: Update<State> | null;
+		pending: Update<State> | null;
 	};
 }
 
@@ -16,36 +16,37 @@ export const createUpdate = <State>(action: Action<State>): Update<State> => {
 	};
 };
 
-export const createUpdateQueue = <State>(): UpdateQueue<State> => {
+export const createUpdateQueue = <State>() => {
 	return {
 		shared: {
-			penging: null
+			pending: null
 		}
-	};
+	} as UpdateQueue<State>;
 };
 
 export const enqueueUpdate = <State>(
 	updateQueue: UpdateQueue<State>,
 	update: Update<State>
 ) => {
-	updateQueue.shared.penging = update;
+	updateQueue.shared.pending = update;
 };
 
 export const processUpdateQueue = <State>(
 	baseState: State,
 	pendingUpdate: Update<State> | null
-): { memorizeState: State } => {
+): { memoizedState: State } => {
 	const result: ReturnType<typeof processUpdateQueue<State>> = {
-		memorizeState: baseState
+		memoizedState: baseState
 	};
 
 	if (pendingUpdate !== null) {
 		const action = pendingUpdate.action;
-
 		if (action instanceof Function) {
-			result.memorizeState = action(baseState);
+			// baseState 1 update (x) => 4x -> memoizedState 4
+			result.memoizedState = action(baseState);
 		} else {
-			result.memorizeState = action;
+			// baseState 1 update 2 -> memoizedState 2
+			result.memoizedState = action;
 		}
 	}
 

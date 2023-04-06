@@ -1,10 +1,12 @@
 import { ReactElementType } from 'shared/ReactTypes';
-import { FiberNode } from './fiber';
-import { HostComponent, HostRoot, HostText } from './workTags';
-import { UpdateQueue, processUpdateQueue } from './updateQueue';
 import { mountChildFibers, reconcileChildFibers } from './childFibers';
+import { FiberNode } from './fiber';
+import { processUpdateQueue, UpdateQueue } from './updateQueue';
+import { HostComponent, HostRoot, HostText } from './workTags';
 
-export const beginWork = (wip: FiberNode): FiberNode | null => {
+// 递归中的递阶段
+export const beginWork = (wip: FiberNode) => {
+	// 比较，返回子fiberNode
 	switch (wip.tag) {
 		case HostRoot:
 			return updateHostRoot(wip);
@@ -12,26 +14,24 @@ export const beginWork = (wip: FiberNode): FiberNode | null => {
 			return updateHostComponent(wip);
 		case HostText:
 			return null;
-
 		default:
 			if (__DEV__) {
-				console.warn('beginwork未实现的类型');
+				console.warn('beginWork未实现的类型');
 			}
-			return null;
+			break;
 	}
+	return null;
 };
 
 function updateHostRoot(wip: FiberNode) {
-	const baseState = wip.memorizedState;
+	const baseState = wip.memoizedState;
 	const updateQueue = wip.updateQueue as UpdateQueue<Element>;
-	const pending = updateQueue.shared.penging;
-	updateQueue.shared.penging = null;
+	const pending = updateQueue.shared.pending;
+	updateQueue.shared.pending = null;
+	const { memoizedState } = processUpdateQueue(baseState, pending);
+	wip.memoizedState = memoizedState;
 
-	const { memorizeState } = processUpdateQueue(baseState, pending);
-	wip.memorizedState = memorizeState;
-
-	const nextChildren = wip.memorizedState;
-
+	const nextChildren = wip.memoizedState;
 	reconcileChildren(wip, nextChildren);
 	return wip.child;
 }
