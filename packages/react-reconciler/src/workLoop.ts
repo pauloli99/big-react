@@ -1,5 +1,6 @@
 import { FiberNode, FiberRootNode, createWorkInProgress } from './fiber';
 import { HostRoot } from './workTags';
+import { beginWork } from './beginWork';
 
 let workInProgress: FiberNode | null = null;
 
@@ -38,7 +39,9 @@ function renderRoot(root: FiberRootNode) {
 			workLoop();
 			break;
 		} catch (e) {
-			console.warn('workloop发生错误', e);
+			if (__DEV__) {
+				console.warn('workloop发生错误', e);
+			}
 			workInProgress = null;
 		}
 	} while (true);
