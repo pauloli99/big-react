@@ -6,7 +6,11 @@ function App() {
 
 	window.setNum = setNum;
 
-	return <div>{num}</div>;
+	return num === 3 ? <Child onClick={() => setNum(111)} /> : <div>{num}</div>;
+}
+
+function Child() {
+	return <span>big-react</span>;
 }
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
