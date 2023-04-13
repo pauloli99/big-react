@@ -7,9 +7,7 @@ export interface Dispatcher {
 
 export type Dispatch<State> = (action: Action<State>) => void;
 
-const currentDispatcher: {
-	current: Dispatcher | null;
-} = {
+const currentDispatcher: { current: Dispatcher | null } = {
 	current: null
 };
 
@@ -19,7 +17,6 @@ export const resolveDispatcher = (): Dispatcher => {
 	if (dispatcher === null) {
 		throw new Error('hook只能在函数组件中执行');
 	}
-
 	return dispatcher;
 };
 

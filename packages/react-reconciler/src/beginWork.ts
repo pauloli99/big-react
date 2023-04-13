@@ -2,6 +2,7 @@ import { ReactElementType } from 'shared/ReactTypes';
 import { mountChildFibers, reconcileChildFibers } from './childFibers';
 import { FiberNode } from './fiber';
 import { renderWithHooks } from './fiberHooks';
+import { Lane } from './fiberLanes';
 import { processUpdateQueue, UpdateQueue } from './updateQueue';
 import {
 	Fragment,
@@ -10,7 +11,6 @@ import {
 	HostRoot,
 	HostText
 } from './workTags';
-import { Lane } from './fiberLanes';
 
 // 递归中的递阶段
 export const beginWork = (wip: FiberNode, renderLane: Lane) => {
